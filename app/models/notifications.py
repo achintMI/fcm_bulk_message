@@ -14,7 +14,7 @@ class Notification(db.Model):
     coupon = db.Column(db.String(50))
     device_token = db.Column(db.String(200))
     status = db.Column(db.String(20), index=True)
-    fcm_message_id = db.Column(db.String(50), nullable=True)
+    fcm_message_id = db.Column(db.String(150), nullable=True)
     created_at = db.Column(db.TIMESTAMP, nullable=False, index=True)
     updated_at = db.Column(db.TIMESTAMP, nullable=False, index=True)
 

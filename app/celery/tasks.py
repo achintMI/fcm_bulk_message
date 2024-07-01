@@ -9,7 +9,7 @@ from app.models.notifications import Notification
 cred = credentials.Certificate('serviceAccountKey.json')
 firebase_app = firebase_admin.initialize_app(cred)
 custom_firebase_app = CustomFirebaseAdmin(firebase_app)
-BATCH_SIZE = 500
+BATCH_SIZE = 50
 
 
 def create_message(user):
@@ -54,7 +54,8 @@ def notification_to_dict(notification):
 @app.task(name='send_batch_notifications')
 def send_notifications(users_batch):
     messages = [create_message(user) for user in users_batch]
-    response = custom_firebase_app.send_each(messages, dry_run=True)
+    print("====sending notifications===")
+    response = custom_firebase_app.send_each(messages)
     notifications = []
     for user, result in zip(users_batch, response.responses):
         notification = Notification(
@@ -79,9 +80,13 @@ def send_notifications(users_batch):
 @app.task(name="process_and_send_notifications")
 def process_and_send_notifications(file_path, batch_size=BATCH_SIZE):
     users = read_user_data(file_path)
+    batch_count = 0
     for i in range(0, len(users), batch_size):
         users_batch = users[i:i + batch_size]
-        send_notifications.apply_async(args=[users_batch], queue='send_notifications')
+        batch_count = batch_count % 5
+        queue_name = f"send_notifications-{batch_count}"
+        batch_count += 1
+        send_notifications.apply_async(args=[users_batch], queue=queue_name)
 
 
 @app.task(name='store_notifications')
