@@ -44,7 +44,7 @@
     ```
 8. Run the celery app:
    ```sh
-   celery -A  app.celery_worker.celery worker  -Q store_notifications,process_and_send_notifications,send_notifications --loglevel=info```
+   celery -A  app.celery_worker.celery worker  -Q store_notifications,process_and_send_notifications,send_notifications-1,send_notifications-2,send_notifications-3,send_notifications-4,send_notifications-0,send_notifications-5,send_notifications-6,send_notifications-7,send_notifications-8,send_notifications-9 --loglevel=info
    ```
    
 9. Access the healthcheck endpoint:

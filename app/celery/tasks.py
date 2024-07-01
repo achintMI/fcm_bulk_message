@@ -83,7 +83,7 @@ def process_and_send_notifications(file_path, batch_size=BATCH_SIZE):
     batch_count = 0
     for i in range(0, len(users), batch_size):
         users_batch = users[i:i + batch_size]
-        batch_count = batch_count % 5
+        batch_count = batch_count % 10
         queue_name = f"send_notifications-{batch_count}"
         batch_count += 1
         send_notifications.apply_async(args=[users_batch], queue=queue_name)
